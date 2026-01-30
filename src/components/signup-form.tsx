@@ -50,7 +50,8 @@ export function SignupForm() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    router.push("/dashboard");
+    // TODO: Connect to POST /api/usuarios endpoint
+    router.push("/login");
   }
 
   return (
