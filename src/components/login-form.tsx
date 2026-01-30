@@ -46,7 +46,7 @@ export function LoginForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-        const response = await fetch('https://api.solanoafk.com/api/auth/login', {
+        const response = await fetch('https://api.solano.com/api/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

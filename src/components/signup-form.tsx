@@ -20,8 +20,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Logo } from "@/components/logo";
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
+  nombre: z.string().min(1, { message: "Please enter your name." }),
+  username: z.string().min(1, { message: "Please enter a username." }),
   email: z.string().email({
     message: "Please enter a valid email address.",
   }),
@@ -36,22 +39,59 @@ const formSchema = z.object({
 
 export function SignupForm() {
   const router = useRouter();
+  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      nombre: "",
+      username: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    // TODO: Connect to POST /api/usuarios endpoint
-    router.push("/login");
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+        const response = await fetch('https://api.solano.com/api/usuarios', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                nombre: values.nombre,
+                username: values.username,
+                correo: values.email,
+                password: values.password,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            toast({
+                title: "Account Created",
+                description: "Your account has been created successfully. Please log in.",
+            });
+            router.push("/login");
+        } else {
+            toast({
+                variant: "destructive",
+                title: "Signup Failed",
+                description: data.message || "Could not create your account.",
+            });
+        }
+    } catch (error) {
+        console.error("Signup error:", error);
+        toast({
+            variant: "destructive",
+            title: "An error occurred",
+            description: "Could not connect to the server. Please try again later.",
+        });
+    }
   }
 
   return (
@@ -63,7 +103,33 @@ export function SignupForm() {
         </CardHeader>
         <CardContent>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <FormField
+                        control={form.control}
+                        name="nombre"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Name</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="John Doe" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="username"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Username</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="john.doe" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                     <FormField
                         control={form.control}
                         name="email"
@@ -127,8 +193,8 @@ export function SignupForm() {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit" className="w-full transition-transform hover:scale-105">
-                        Create Account
+                    <Button type="submit" className="w-full transition-transform hover:scale-105" disabled={form.formState.isSubmitting}>
+                        {form.formState.isSubmitting ? "Creating Account..." : "Create Account"}
                     </Button>
                 </form>
             </Form>

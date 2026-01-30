@@ -31,7 +31,7 @@ export function LogoutButton() {
     }
 
     try {
-      const response = await fetch('https://api.solanoafk.com/api/auth/logout', {
+      const response = await fetch('https://api.solano.com/api/auth/logout', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
