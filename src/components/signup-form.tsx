@@ -56,7 +56,7 @@ export function SignupForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-        const response = await fetch('https://api.solano.com/api/usuarios', {
+        const response = await fetch('https://api.solanoafk.com/api/usuarios', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
