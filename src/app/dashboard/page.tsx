@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LogOut } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 
 export default function DashboardPage() {
@@ -14,6 +15,7 @@ export default function DashboardPage() {
       <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background px-4 sm:px-6">
         <Logo href="/dashboard" />
         <div className="flex items-center gap-4">
+          <ThemeToggle />
           <Avatar className="h-9 w-9">
             <AvatarImage src={userAvatar?.imageUrl} data-ai-hint={userAvatar?.imageHint} alt="User" />
             <AvatarFallback>U</AvatarFallback>
