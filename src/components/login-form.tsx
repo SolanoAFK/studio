@@ -59,9 +59,11 @@ export function LoginForm() {
 
         const data = await response.json();
 
-        if (response.ok) {
+        if (response.ok && data.token) {
             localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.usuario));
+            if (data.usuario) {
+              localStorage.setItem('user', JSON.stringify(data.usuario));
+            }
             router.push("/dashboard");
         } else {
             toast({

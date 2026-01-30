@@ -39,7 +39,7 @@ export default function DashboardPage() {
         setLoading(false);
       }
     }
-  }, [router]);
+  }, []);
   
   if (loading || !user) {
     return (
